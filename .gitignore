@@ -1,0 +1,9 @@
+# VS Code Settings
+.vscode
+__pycache__
+
+# Goorm settings
+goorm.manifest
+
+# Folder
+telegram_example

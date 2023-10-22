@@ -70,24 +70,23 @@ def crawl_krx(isinCd, isinCdNm):
         "param1isuCd_finder_bondisu0_1": "2",
     }
     res = requests.post(url, data=data)
-    pprint(res.json()["output"])
+    return res.json()["output"][0]
 
 
 def crawl_news(corp_name):
-    url = f"https://www.teamblind.com/kr/company/{corp_name}/news"
+    url = f"https://search.hankyung.com/search/news?query={corp_name}%"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.0.0 Safari/537.36"
     }
     res = requests.get(url, headers=headers)
     soup = BeautifulSoup(res.text, "html.parser")
-    articles = soup.find_all("article")
+    articles = soup.find("ul", class_="article").find_all("li")
 
     links = []
     for i in range(3):
         article = articles[i]
-        url_div = article.find("div", class_="url")
-        link = url_div.find("a")
-        links.append(link.text)
+        link = article.find("div", class_="txt_wrap").find("a").get("href")
+        links.append(link)
 
     return links
 
@@ -110,4 +109,4 @@ if __name__ == "__main__":
     selected_bond = bond_list[select_number + 1]
     # print(selected_bond)
     res = crawl_krx(selected_bond["isinCd"], selected_bond["isinCdNm"])
-    print(res)
+    pprint(res)
